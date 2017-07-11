@@ -25,8 +25,8 @@ namespace StardewValleyBundleTooltips
 
         Item toolbarItem;
         List<int> itemsInBundles;
-        SerializableDictionary<int, int[][]> bundles;
-        SerializableDictionary<int, string[]> bundleNamesAndSubNames;
+        Dictionary<int, int[][]> bundles;
+        Dictionary<int, string[]> bundleNamesAndSubNames;
 
         /*********
         ** Public methods
@@ -79,9 +79,8 @@ namespace StardewValleyBundleTooltips
         {
             StardewValley.Locations.CommunityCenter communityCenter = Game1.getLocationFromName("CommunityCenter") as StardewValley.Locations.CommunityCenter;
 
-            List<string[]> itemInfo = new List<string[]>();
-            string desc = "";
-            int count = 0;
+            List<int[]> itemInfo = new List<int[]>();
+            Dictionary<string, List<string>> descriptions = new Dictionary<string, List<string>>();
 
             foreach (int itemInBundles in itemsInBundles)
             {
@@ -96,11 +95,9 @@ namespace StardewValleyBundleTooltips
                             {
                                 if(!isItemInBundleSlot)
                                 {
-                                    if (count > 0)
-                                        desc += "\n";
-
-                                    desc += bundleNamesAndSubNames[bundle.Key][0] + " | " + bundleNamesAndSubNames[bundle.Key][1] + " | Quantity:" + bundle.Value[i][1];
-                                    count++;
+                                    //Saving i to check if the items are the same or not later on
+                                    itemInfo.Add(new int[] {bundle.Key,bundle.Value[i][1],i});
+                                    descriptions[bundleNamesAndSubNames[bundle.Key][0]] = new List<string>();
                                 }
                             }
                         }
@@ -108,8 +105,32 @@ namespace StardewValleyBundleTooltips
                 }
             }
 
-            if(desc != "")
-                this.DrawHoverTextBox(Game1.smallFont, desc);
+            
+            foreach (int[] info in itemInfo)
+            {
+                string bundleName = bundleNamesAndSubNames[info[0]][0];
+                string bundleSubName = bundleNamesAndSubNames[info[0]][1];
+                int quantity = info[1];
+
+                descriptions[bundleName].Add(bundleSubName + " | Qty: " + quantity);
+            }
+
+            if (descriptions.Count > 0)
+            {
+                string tooltipText = "";
+
+                foreach (KeyValuePair<string, List<string>> keyValuePair in descriptions)
+                {
+                    tooltipText += keyValuePair.Key;
+                    foreach(string value in keyValuePair.Value)
+                    {
+                        tooltipText += "\n    " + value;
+                    }
+                    
+                }
+
+                this.DrawHoverTextBox(Game1.smallFont, tooltipText);
+            }
         }
 
         private Item GetHoveredItemFromMenu(IClickableMenu menu)
@@ -217,11 +238,11 @@ namespace StardewValleyBundleTooltips
             //}
         }
 
-        private SerializableDictionary<int, int[][]> getBundles()
+        private Dictionary<int, int[][]> getBundles()
         {
             Dictionary<string, string> dictionary = Game1.content.Load<Dictionary<string, string>>("Data\\Bundles");
-            SerializableDictionary<int, int[][]> bundles = new SerializableDictionary<int, int[][]>();
-            bundleNamesAndSubNames = new SerializableDictionary<int, string[]>();
+            Dictionary<int, int[][]> bundles = new Dictionary<int, int[][]>();
+            bundleNamesAndSubNames = new Dictionary<int, string[]>();
 
             foreach (KeyValuePair<string, string> keyValuePair in dictionary)
             {
