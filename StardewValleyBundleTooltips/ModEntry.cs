@@ -108,11 +108,10 @@ namespace StardewValleyBundleTooltips
                         for (int i = 0; i < bundle.Value.Length; i++)
                         {
                             var isItemInBundleSlot = communityCenter.bundles[bundle.Key][bundle.Value[i][3]];
-                            if ((item is StardewValley.Object) && bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && bundle.Value[i][2] <= ((StardewValley.Object)item).quality)
+                            if ((item is StardewValley.Object) && item.Stack != 0 && bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && bundle.Value[i][2] <= ((StardewValley.Object)item).quality)
                             {
                                 if(!isItemInBundleSlot)
                                 {
-                                    //var t =item.DisplayName;
                                     //Saving i to check if the items are the same or not later on
                                     itemInfo.Add(new int[] {bundle.Key,bundle.Value[i][1],i});
                                     descriptions[bundleNamesAndSubNames[bundle.Key][0]] = new List<string>();
