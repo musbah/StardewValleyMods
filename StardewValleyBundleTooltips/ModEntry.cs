@@ -118,14 +118,19 @@ namespace StardewValleyBundleTooltips
             if (descriptions.Count > 0)
             {
                 string tooltipText = "";
+                int count = 0;
 
                 foreach (KeyValuePair<string, List<string>> keyValuePair in descriptions)
                 {
+                    if (count > 0)
+                        tooltipText += "\n";
+
                     tooltipText += keyValuePair.Key;
                     foreach(string value in keyValuePair.Value)
                     {
                         tooltipText += "\n    " + value;
                     }
+                    count++;
                     
                 }
 
