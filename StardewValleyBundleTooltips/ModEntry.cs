@@ -26,7 +26,7 @@ namespace StardewValleyBundleTooltips
         Item toolbarItem;
         List<int> itemsInBundles;
         SerializableDictionary<int, int[][]> bundles;
-        SerializableDictionary<int, String[]> bundleNamesAndSubNames;
+        SerializableDictionary<int, string[]> bundleNamesAndSubNames;
 
         /*********
         ** Public methods
@@ -79,7 +79,8 @@ namespace StardewValleyBundleTooltips
         {
             StardewValley.Locations.CommunityCenter communityCenter = Game1.getLocationFromName("CommunityCenter") as StardewValley.Locations.CommunityCenter;
 
-            String desc = "";
+            List<string[]> itemInfo = new List<string[]>();
+            string desc = "";
             int count = 0;
 
             foreach (int itemInBundles in itemsInBundles)
@@ -142,7 +143,7 @@ namespace StardewValleyBundleTooltips
             return null;
         }
 
-        private void DrawHoverTextBox(SpriteFont font, String description)
+        private void DrawHoverTextBox(SpriteFont font, string description)
         {
             Vector2 stringLength = font.MeasureString(description);
             int width = (int)stringLength.X + Game1.tileSize / 2 + 40;
@@ -216,7 +217,7 @@ namespace StardewValleyBundleTooltips
             //}
         }
 
-        public SerializableDictionary<int, int[][]> getBundles()
+        private SerializableDictionary<int, int[][]> getBundles()
         {
             Dictionary<string, string> dictionary = Game1.content.Load<Dictionary<string, string>>("Data\\Bundles");
             SerializableDictionary<int, int[][]> bundles = new SerializableDictionary<int, int[][]>();
@@ -228,17 +229,17 @@ namespace StardewValleyBundleTooltips
 
                 //if bundleIndex is between 23 and 26, then they're vault bundles so don't add to dictionary
 
-                String[] split = keyValuePair.Key.Split('/');
-                String bundleName = split[0];
-                String bundleSubName = keyValuePair.Value.Split('/')[0];
+                string[] split = keyValuePair.Key.Split('/');
+                string bundleName = split[0];
+                string bundleSubName = keyValuePair.Value.Split('/')[0];
                 int bundleIndex = Convert.ToInt32(split[1]);
                 if (!(bundleIndex >= 23 && bundleIndex <= 26))
                 {
                     //creating an array for the bundle names
-                    String[] bundleNames = new String[] {bundleName,bundleSubName} ;
+                    string[] bundleNames = new string[] {bundleName,bundleSubName} ;
 
                     //creating an array of items[i][j] , i is the item index, j=0 itemId, j=1 itemAmount, j=2 itemQuality
-                    String[] allItems = keyValuePair.Value.Split('/')[2].Split(' ');
+                    string[] allItems = keyValuePair.Value.Split('/')[2].Split(' ');
                     int allItemsLength = allItems.Length / 3;
                     
                     int[][] items = new int[allItemsLength][];
