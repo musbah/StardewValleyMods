@@ -21,7 +21,10 @@ namespace StardewValleyBundleTooltips
     public class ModEntry : Mod
     {
         //Needed to make sure essential variables are loaded before running what needs them
-        Boolean isLoaded = false;
+        bool isLoaded = false;
+
+        // check if a mod is loaded
+        bool isCJBSellItemPriceLoaded;
 
         Item toolbarItem;
         List<int> itemsInBundles;
@@ -35,6 +38,8 @@ namespace StardewValleyBundleTooltips
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
+            isCJBSellItemPriceLoaded = this.Helper.ModRegistry.IsLoaded("CJBok.ShowItemSellPrice");
+
             SaveEvents.AfterLoad += this.SaveEvents_AfterLoad;
             GraphicsEvents.OnPostRenderGuiEvent += GraphicsEvents_OnPostRenderGuiEvent;
             GraphicsEvents.OnPreRenderHudEvent += GraphicsEvents_OnPreRenderHudEvent;
@@ -71,7 +76,7 @@ namespace StardewValleyBundleTooltips
         {
             if (isLoaded && Game1.activeClickableMenu == null && toolbarItem != null)
             {
-                PopulateHoverTextBoxAndDraw(toolbarItem);
+                PopulateHoverTextBoxAndDraw(toolbarItem,true);
                 toolbarItem = null;
             }
         }
@@ -82,11 +87,11 @@ namespace StardewValleyBundleTooltips
             {
                 Item item = this.GetHoveredItemFromMenu(Game1.activeClickableMenu);
                 if (item != null)
-                    PopulateHoverTextBoxAndDraw(item);
+                    PopulateHoverTextBoxAndDraw(item,false);
             }
         }
 
-        private void PopulateHoverTextBoxAndDraw(Item item)
+        private void PopulateHoverTextBoxAndDraw(Item item, bool isItFromToolbar)
         {
             StardewValley.Locations.CommunityCenter communityCenter = Game1.getLocationFromName("CommunityCenter") as StardewValley.Locations.CommunityCenter;
 
@@ -145,7 +150,7 @@ namespace StardewValleyBundleTooltips
                     
                 }
 
-                this.DrawHoverTextBox(Game1.smallFont, tooltipText);
+                this.DrawHoverTextBox(Game1.smallFont, tooltipText, isItFromToolbar , item.Stack);
             }
         }
 
@@ -180,7 +185,7 @@ namespace StardewValleyBundleTooltips
             return null;
         }
 
-        private void DrawHoverTextBox(SpriteFont font, string description)
+        private void DrawHoverTextBox(SpriteFont font, string description, bool isItFromToolbar, int itemStack)
         {
             Vector2 stringLength = font.MeasureString(description);
             int width = (int)stringLength.X + Game1.tileSize / 2 + 40;
@@ -188,6 +193,15 @@ namespace StardewValleyBundleTooltips
 
             int x = (int)(Mouse.GetState().X / Game1.options.zoomLevel) - Game1.tileSize / 2 - width;
             int y = (int)(Mouse.GetState().Y / Game1.options.zoomLevel) + Game1.tileSize / 2;
+
+            //So that the tooltips don't overlap
+            if (isCJBSellItemPriceLoaded && !isItFromToolbar)
+            {
+                if (itemStack > 1)
+                    y += 95;
+                else
+                    y += 55;
+            }   
 
             if (x < 0)
                 x = 0;
