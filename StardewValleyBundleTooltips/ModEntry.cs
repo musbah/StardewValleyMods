@@ -39,7 +39,6 @@ namespace StardewValleyBundleTooltips
             GraphicsEvents.OnPostRenderGuiEvent += GraphicsEvents_OnPostRenderGuiEvent;
             GraphicsEvents.OnPreRenderHudEvent += GraphicsEvents_OnPreRenderHudEvent;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
-            PlayerEvents.InventoryChanged += this.PlayerEvents_InventoryChanged;
 
         }
 
@@ -50,6 +49,18 @@ namespace StardewValleyBundleTooltips
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
         /// 
+        private void SaveEvents_AfterLoad(object sender, EventArgs e)
+        {
+            //This will be filled with the itemIDs of every item in every bundle (for a fast search without details)
+            itemsInBundles = new List<int>();
+            bundles = getBundles();
+
+            //remove duplicates
+            itemsInBundles = new HashSet<int>(itemsInBundles).ToList();
+
+            isLoaded = true;
+        }
+
         private void GraphicsEvents_OnPreRenderHudEvent(object sender, EventArgs e)
         {
             //I have to get it on preRendering because it gets set to null post
@@ -186,61 +197,6 @@ namespace StardewValleyBundleTooltips
 
             IClickableMenu.drawTextureBox(Game1.spriteBatch, Game1.menuTexture, new Rectangle(0, 256, 60, 60), x, y, width, height, Color.White);
             Utility.drawTextWithShadow(Game1.spriteBatch, description, font, new Vector2(x + Game1.tileSize / 4, y + Game1.tileSize / 4), Game1.textColor);
-        }
-
-
-        private void PlayerEvents_InventoryChanged(object sender, EventArgsInventoryChanged e)
-        {
-            
-        }
-
-        private void SaveEvents_AfterLoad(object sender, EventArgs e)
-        {
-            //This will be filled with the itemIDs of every item in every bundle (for a fast search without details)
-            itemsInBundles = new List<int>();
-            bundles = getBundles();
-
-            //remove duplicates
-            itemsInBundles = new HashSet<int>(itemsInBundles).ToList();
-
-            isLoaded = true;
-
-            //Game1.objectInformation contains the raw items data
-
-            //this.Monitor.Log(Game1.player.hasItemInInventory(0, 1));
-
-            //List<int> playerItemsInBundle = new List<int>();
-
-            //first check player inventory for bundle items
-            //for (int i = 0; i < Game1.player.items.Count; i++)
-            //{
-            //    //parentSheetIndex -1 means that these are tools and not items
-            //    if (Game1.player.items[i] != null && Game1.player.items[i].parentSheetIndex != -1)
-            //    {
-            //        foreach (int itemInBundles in itemsInBundles)
-            //        {
-            //            if (Game1.player.items[i].parentSheetIndex == itemInBundles)
-            //                playerItemsInBundle.Add(itemInBundles);
-            //        }
-            //    }
-            //}
-
-            //remove the duplicate items
-            //playerItemsInBundle = new HashSet<int>(playerItemsInBundle).ToList();
-            //output the items that are needed for community center, if we have any in inventory
-            //foreach (KeyValuePair<int, int[][]> bundle in bundles)
-            //{
-            //    for (int i = 0; i < bundle.Value.Length; i++)
-            //    {
-            //        for (int j = 0; j < playerItemsInBundle.Count; j++)
-            //        {
-            //            if (bundle.Value[i] != null && bundle.Value[i][0] == playerItemsInBundle[j])
-            //            {
-            //                this.Monitor.Log("BundleId:" + bundle.Key + " itemId:" + bundle.Value[i][0] + " itemQuantity:" + bundle.Value[i][1] + " itemQuality:" + bundle.Value[i][2]);
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         private Dictionary<int, int[][]> getBundles()
