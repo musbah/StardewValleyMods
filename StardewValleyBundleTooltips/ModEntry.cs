@@ -31,6 +31,7 @@ namespace StardewValleyBundleTooltips
         Dictionary<int, int[][]> bundles;
         Dictionary<int, string[]> bundleNamesAndSubNames;
 
+
         /*********
         ** Public methods
         *********/
@@ -44,8 +45,8 @@ namespace StardewValleyBundleTooltips
             GraphicsEvents.OnPostRenderGuiEvent += GraphicsEvents_OnPostRenderGuiEvent;
             GraphicsEvents.OnPreRenderHudEvent += GraphicsEvents_OnPreRenderHudEvent;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
-
         }
+
 
         /*********
         ** Private methods
@@ -63,7 +64,7 @@ namespace StardewValleyBundleTooltips
             //remove duplicates
             itemsInBundles = new HashSet<int>(itemsInBundles).ToList();
 
-            isLoaded = true;
+            isLoaded = true; 
         }
 
         private void GraphicsEvents_OnPreRenderHudEvent(object sender, EventArgs e)
@@ -106,7 +107,7 @@ namespace StardewValleyBundleTooltips
                     {
                         for (int i = 0; i < bundle.Value.Length; i++)
                         {
-                            var isItemInBundleSlot = communityCenter.bundles[bundle.Key][i*3];
+                            var isItemInBundleSlot = communityCenter.bundles[bundle.Key][bundle.Value[i][3]];
                             if (bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && bundle.Value[i][2] == ((StardewValley.Object)item).quality)
                             {
                                 if(!isItemInBundleSlot)
@@ -234,7 +235,7 @@ namespace StardewValleyBundleTooltips
                     //creating an array for the bundle names
                     string[] bundleNames = new string[] {bundleName,bundleSubName} ;
 
-                    //creating an array of items[i][j] , i is the item index, j=0 itemId, j=1 itemAmount, j=2 itemQuality
+                    //creating an array of items[i][j] , i is the item index, j=0 itemId, j=1 itemAmount, j=2 itemQuality, j=3 order of the item for it's own bundle
                     string[] allItems = keyValuePair.Value.Split('/')[2].Split(' ');
                     int allItemsLength = allItems.Length / 3;
                     
@@ -244,10 +245,11 @@ namespace StardewValleyBundleTooltips
                     int i = 0;
                     while(j< allItemsLength)
                     {
-                        items[j] = new int[3];
+                        items[j] = new int[4];
                         items[j][0] = Convert.ToInt32(allItems[0 + i]);
                         items[j][1] = Convert.ToInt32(allItems[1 + i]);
                         items[j][2] = Convert.ToInt32(allItems[2 + i]);
+                        items[j][3] = i/3;
 
                         itemsInBundles.Add(items[j][0]);
                         i = i + 3;
