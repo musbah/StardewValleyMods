@@ -107,8 +107,14 @@ namespace StardewValleyBundleTooltips
                     {
                         for (int i = 0; i < bundle.Value.Length; i++)
                         {
+                            //Getting the item name because the bundle itself doesn't actually make sure that the correct item is being placed
+                            //(parentSheetIndex of object can overlap with another item from another sheet)
+                            string itemName = "";
+                            if (Game1.objectInformation.ContainsKey(bundle.Value[i][0]))
+                                itemName = Game1.objectInformation[bundle.Value[i][0]].Split('/')[0];
+
                             var isItemInBundleSlot = communityCenter.bundles[bundle.Key][bundle.Value[i][3]];
-                            if ((item is StardewValley.Object) && item.Stack != 0 && bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && bundle.Value[i][2] <= ((StardewValley.Object)item).quality)
+                            if ((item is StardewValley.Object) && item.Stack != 0 && bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && itemName == item.DisplayName && bundle.Value[i][2] <= ((StardewValley.Object)item).quality)
                             {
                                 if(!isItemInBundleSlot)
                                 {
