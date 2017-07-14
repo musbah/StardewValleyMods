@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StardewValleyBundleTooltips", "BundleTooltips\StardewValleyBundleTooltips.csproj", "{B41962BC-91F8-468D-B727-B177096304C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookingOrganizer", "CookingOrganizer\CookingOrganizer.csproj", "{D1089178-683E-44D7-8AA5-BFB79B741861}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeOrganizer", "RecipeOrganizer\RecipeOrganizer.csproj", "{D1089178-683E-44D7-8AA5-BFB79B741861}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
