@@ -64,7 +64,7 @@ namespace StardewValleyBundleTooltips
             //remove duplicates
             itemsInBundles = new HashSet<int>(itemsInBundles).ToList();
 
-            isLoaded = true; 
+        isLoaded = true; 
         }
 
         private void GraphicsEvents_OnPreRenderHudEvent(object sender, EventArgs e)
