@@ -6,6 +6,7 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Menus;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace RecipeOrganizer
 {
@@ -44,9 +45,64 @@ namespace RecipeOrganizer
                 if (e.NewState.LeftButton == ButtonState.Pressed && e.PriorState.LeftButton == ButtonState.Released)
                 {
                     if (organizeButton.bounds.Contains(e.NewPosition.X, e.NewPosition.Y))
+                    {
                         this.Monitor.Log("I'm clicking");
+                        SortRecipes();
+                    }
                 }
             }
+        }
+
+        private void SortRecipes()
+        {
+
+            List<Dictionary<ClickableTextureComponent, CraftingRecipe>> pagesOfRecipes = ((CraftingPage)Game1.activeClickableMenu).pagesOfCraftingRecipes;
+            Dictionary<string, int> farmerRecipes = Game1.player.cookingRecipes;
+
+            List<ClickableTextureComponent> knownRecipes = new List<ClickableTextureComponent>();
+            List<Vector2[]> recipesLocationsPages = new List<Vector2[]>();
+
+            //Getting and saying recipe textures (to change x and y) and then all recipe locations on each page
+            for (int i = 0; i < pagesOfRecipes.Count; i++)
+            {
+                List<Vector2> recipesLocations = new List<Vector2>();
+
+                foreach (KeyValuePair<ClickableTextureComponent, CraftingRecipe> page in pagesOfRecipes[i])
+                {
+                    recipesLocations.Add(new Vector2(page.Key.bounds.X, page.Key.bounds.Y));
+
+                    foreach (string recipeName in farmerRecipes.Keys)
+                    {
+                        if (recipeName == page.Value.DisplayName)
+                            knownRecipes.Add(page.Key);
+                    }
+                }
+
+                recipesLocationsPages.Add(recipesLocations.ToArray());
+            }
+
+            //Sort the recipe locations
+            foreach(Vector2[] pageLocations in recipesLocationsPages)
+            {
+                for (int i = 1; i < pageLocations.Length; i++)
+                {
+                    while (pageLocations[i].X < pageLocations[i - 1].X && pageLocations[i].Y < pageLocations[i - 1].Y)
+                    {
+                        Vector2 temp = pageLocations[i - 1];
+                        pageLocations[i - 1] = pageLocations[i];
+                        pageLocations[i] = temp;
+                    }
+                }
+            }
+
+            foreach(ClickableTextureComponent knownRecipe in knownRecipes)
+            {
+                for(int i=0; i<recipesLocationsPages[0].Length;i++)
+                {
+
+                }
+            }
+
         }
 
         private void InitializeButton()
