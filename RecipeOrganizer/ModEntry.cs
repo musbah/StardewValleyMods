@@ -7,7 +7,7 @@ using StardewValley;
 using StardewValley.Menus;
 using Microsoft.Xna.Framework.Input;
 
-namespace CookingOrganizer
+namespace RecipeOrganizer
 {
     /// <summary>The mod entry point.</summary>
     public class ModEntry : Mod
@@ -21,9 +21,8 @@ namespace CookingOrganizer
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            InitializeButton();
-
-            GameEvents.UpdateTick += GameEvents_UpdateTick;
+            SaveEvents.AfterLoad += SaveEvents_AfterLoad;
+            ControlEvents.MouseChanged += ControlEvents_MouseChanged;
             GraphicsEvents.Resize += GraphicsEvents_Resize;
             GraphicsEvents.OnPreRenderGuiEvent += GraphicsEvents_OnPreRenderGuiEvent;
         }
@@ -33,19 +32,19 @@ namespace CookingOrganizer
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
         /// 
+        private void SaveEvents_AfterLoad(object sender, EventArgs e)
+        {
+            InitializeButton();
+        }
 
-        private void GameEvents_UpdateTick(object sender, EventArgs e)
+        private void ControlEvents_MouseChanged(object sender, EventArgsMouseStateChanged e)
         {
             if (isInRecipeMenu())
             {
-                MouseState mouseState = Mouse.GetState();
-                int mouseX = Game1.getMouseX();
-                int mouseY = Game1.getMouseY();
-
-                if(mouseState.LeftButton == ButtonState.Pressed && Game1.oldMouseState.LeftButton == ButtonState.Released)
+                if (e.NewState.LeftButton == ButtonState.Pressed && e.PriorState.LeftButton == ButtonState.Released)
                 {
-                    if (organizeButton.containsPoint(mouseX, mouseY))
-                        this.Monitor.Log("I'm in");
+                    if (organizeButton.bounds.Contains(e.NewPosition.X, e.NewPosition.Y))
+                        this.Monitor.Log("I'm clicking");
                 }
             }
         }
@@ -63,6 +62,8 @@ namespace CookingOrganizer
             organizeButton = new ClickableTextureComponent("", bounds, "", Game1.content.LoadString("Strings\\UI:ItemGrab_Organize"), Game1.mouseCursors, sourceRect, (float)Game1.pixelZoom, false);
         }
 
+        //Won't do anything until a new SMAPI update (which should fix it)
+        //https://github.com/Pathoschild/SMAPI/issues/328
         private void GraphicsEvents_Resize(object sender, EventArgs e)
         {
             InitializeButton();
