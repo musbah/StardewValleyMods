@@ -59,50 +59,99 @@ namespace RecipeOrganizer
             List<Dictionary<ClickableTextureComponent, CraftingRecipe>> pagesOfRecipes = ((CraftingPage)Game1.activeClickableMenu).pagesOfCraftingRecipes;
             Dictionary<string, int> farmerRecipes = Game1.player.cookingRecipes;
 
-            List<ClickableTextureComponent> knownRecipes = new List<ClickableTextureComponent>();
-            List<Vector2[]> recipesLocationsPages = new List<Vector2[]>();
+            //I may be able to use currentRecipePage to play with x and y depending on some things
+            //int currentRecipePage = this.Helper.Reflection.GetPrivateValue<int>(((CraftingPage)Game1.activeClickableMenu), "currentCraftingPage"); 
+
+            Dictionary<ClickableTextureComponent, int> knownRecipes = new Dictionary<ClickableTextureComponent, int>();
+            Dictionary<ClickableTextureComponent, int> unknownRecipes = new Dictionary<ClickableTextureComponent, int>();
+            //List<Vector2[]> recipesLocationsPages = new List<Vector2[]>();
 
             //Getting and saying recipe textures (to change x and y) and then all recipe locations on each page
+            //Well, I just noticed that page 1 and page 2 are independent... so I can't just change x, y I need a way to put stuff from p2 on page 1
             for (int i = 0; i < pagesOfRecipes.Count; i++)
             {
-                List<Vector2> recipesLocations = new List<Vector2>();
+                //List<Vector2> recipesLocations = new List<Vector2>();
 
                 foreach (KeyValuePair<ClickableTextureComponent, CraftingRecipe> page in pagesOfRecipes[i])
                 {
-                    recipesLocations.Add(new Vector2(page.Key.bounds.X, page.Key.bounds.Y));
+                    //recipesLocations.Add(new Vector2(page.Key.bounds.X, page.Key.bounds.Y));
+                    bool unknown = true;
 
                     foreach (string recipeName in farmerRecipes.Keys)
                     {
                         if (recipeName == page.Value.DisplayName)
-                            knownRecipes.Add(page.Key);
+                        {
+                            knownRecipes.Add(page.Key,i);
+                            unknown = false;
+                        }
                     }
+
+                    if (unknown)
+                        unknownRecipes.Add(page.Key,i);
                 }
 
-                recipesLocationsPages.Add(recipesLocations.ToArray());
+                //recipesLocationsPages.Add(recipesLocations.ToArray());
             }
 
-            //Sort the recipe locations
-            foreach(Vector2[] pageLocations in recipesLocationsPages)
-            {
-                for (int i = 1; i < pageLocations.Length; i++)
-                {
-                    while (pageLocations[i].X < pageLocations[i - 1].X && pageLocations[i].Y < pageLocations[i - 1].Y)
-                    {
-                        Vector2 temp = pageLocations[i - 1];
-                        pageLocations[i - 1] = pageLocations[i];
-                        pageLocations[i] = temp;
-                    }
-                }
-            }
+            //Was thinking of changing the collection directly, but turns out that it stops looping if a collection is modified
+            //foreach(KeyValuePair<ClickableTextureComponent, int> knownRecipe in knownRecipes)
+            //{
+            //    foreach(KeyValuePair<ClickableTextureComponent, int> unknownRecipe in unknownRecipes)
+            //    {
+            //        //if an unknown recipe is on page 1 while known is on page 2
+            //        if (knownRecipe.Value == 1 && unknownRecipe.Value == 0)
+            //        {
+            //            foreach (KeyValuePair<ClickableTextureComponent, CraftingRecipe> mainRecipesPage in pagesOfRecipes[0])
+            //            {
+            //                if (mainRecipesPage.Key == unknownRecipe.Key)
+            //                {
+            //                    foreach (KeyValuePair<ClickableTextureComponent, CraftingRecipe> mainRecipesPage2 in pagesOfRecipes[1])
+            //                    {
+            //                        if (mainRecipesPage2.Key == knownRecipe.Key)
+            //                        {
+            //                            //removes the unknown from page 1 and known from page 2
+            //                            //add known to page 1 and add unknown to page 2
+            //                            pagesOfRecipes[0].Remove(mainRecipesPage.Key);
+            //                            pagesOfRecipes[1].Remove(mainRecipesPage2.Key);
+            //                            pagesOfRecipes[0].Add(mainRecipesPage2.Key, mainRecipesPage2.Value);
+            //                            pagesOfRecipes[1].Add(mainRecipesPage.Key, mainRecipesPage.Value);
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
-            foreach(ClickableTextureComponent knownRecipe in knownRecipes)
-            {
-                for(int i=0; i<recipesLocationsPages[0].Length;i++)
-                {
 
-                }
-            }
+            //Sort the recipe locations for known recipes
+            //foreach(Vector2[] pageLocations in recipesLocationsPages)
+            //{
+            //    for (int i = 1; i < pageLocations.Length; i++)
+            //    {
+            //        while (pageLocations[i].X < pageLocations[i - 1].X && pageLocations[i].Y < pageLocations[i - 1].Y)
+            //        {
+            //            Vector2 temp = pageLocations[i - 1];
+            //            pageLocations[i - 1] = pageLocations[i];
+            //            pageLocations[i] = temp;
+            //        }
+            //    }
+            //}
 
+            //ClickableTextureComponent[] knownRecipesArray = knownRecipes.ToArray();
+            //ClickableTextureComponent[] unknownRecipesArray = unknownRecipes.ToArray();
+
+            //for (int index=0; index < knownRecipesArray.Length; index++)
+            //{
+            //    knownRecipesArray[index].bounds.X = (int)recipesLocationsPages[0][index].X;
+            //    knownRecipesArray[index].bounds.Y = (int)recipesLocationsPages[0][index].Y;
+            //}
+
+            //for(int index=knownRecipesArray.Length; index<recipesLocationsPages[0].Length;index++)
+            //{
+            //    unknownRecipesArray[index].bounds.X = (int)recipesLocationsPages[0][index].X;
+            //    unknownRecipesArray[index].bounds.Y = (int)recipesLocationsPages[0][index].Y;
+            //}
         }
 
         private void InitializeButton()
