@@ -31,6 +31,8 @@ namespace StardewValleyBundleTooltips
         Dictionary<int, int[][]> bundles;
         Dictionary<int, string[]> bundleNamesAndSubNames;
 
+        string language = "";
+
 
         /*********
         ** Public methods
@@ -111,7 +113,12 @@ namespace StardewValleyBundleTooltips
                             //(parentSheetIndex of object can overlap with another item from another sheet)
                             string itemName = "";
                             if (Game1.objectInformation.ContainsKey(bundle.Value[i][0]))
-                                itemName = Game1.objectInformation[bundle.Value[i][0]].Split('/')[0];
+                            {
+                                if(language == "")
+                                    itemName = Game1.objectInformation[bundle.Value[i][0]].Split('/')[0];
+                                else
+                                    itemName = Game1.objectInformation[bundle.Value[i][0]].Split('/')[4];
+                            }
 
                             var isItemInBundleSlot = communityCenter.bundles[bundle.Key][bundle.Value[i][3]];
                             if ((item is StardewValley.Object) && item.Stack != 0 && bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && itemName == item.DisplayName && bundle.Value[i][2] <= ((StardewValley.Object)item).quality)
@@ -221,7 +228,30 @@ namespace StardewValleyBundleTooltips
 
         private Dictionary<int, int[][]> getBundles()
         {
-            Dictionary<string, string> dictionary = Game1.content.Load<Dictionary<string, string>>("Data\\Bundles");
+            switch (LocalizedContentManager.CurrentLanguageCode)
+            {
+                case LocalizedContentManager.LanguageCode.ja:
+                    language = ".ja-JP";
+                    break;
+                case LocalizedContentManager.LanguageCode.ru:
+                    language = ".ru-RU";
+                    break;
+                case LocalizedContentManager.LanguageCode.pt:
+                    language = ".pt-BR";
+                    break;
+                case LocalizedContentManager.LanguageCode.es:
+                    language = ".es-ES";
+                    break;
+                case LocalizedContentManager.LanguageCode.de:
+                    language = ".de-DE";
+                    break;
+                case LocalizedContentManager.LanguageCode.zh:
+                    language = ".zh-CN";
+                    break;
+            }
+
+            Dictionary<string, string> dictionary = Game1.content.Load<Dictionary<string, string>>("Data\\Bundles" + language);
+
             Dictionary<int, int[][]> bundles = new Dictionary<int, int[][]>();
             bundleNamesAndSubNames = new Dictionary<int, string[]>();
 
@@ -233,7 +263,14 @@ namespace StardewValleyBundleTooltips
 
                 string[] split = keyValuePair.Key.Split('/');
                 string bundleName = split[0];
-                string bundleSubName = keyValuePair.Value.Split('/')[0];
+
+                string bundleSubName;
+
+                if (language == "")
+                    bundleSubName = keyValuePair.Value.Split('/')[0];
+                else
+                    bundleSubName = keyValuePair.Value.Split('/')[4];
+
                 int bundleIndex = Convert.ToInt32(split[1]);
                 if (!(bundleIndex >= 23 && bundleIndex <= 26))
                 {
