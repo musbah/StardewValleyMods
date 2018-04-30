@@ -186,7 +186,7 @@ namespace RecipeOrganizer
             if (Game1.activeClickableMenu != null && menu is CraftingPage)
             {
                 //if it is the recipe menu
-                return this.Helper.Reflection.GetPrivateValue<bool>(menu, "cooking");
+                return this.Helper.Reflection.GetField<bool>(menu, "cooking").GetValue();
             }
             return false;
         }

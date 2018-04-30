@@ -103,7 +103,7 @@ namespace StardewValleyBundleTooltips
 
             foreach (int itemInBundles in itemsInBundles)
             {
-                if (item.parentSheetIndex == itemInBundles)
+                if (item.ParentSheetIndex == itemInBundles)
                 {
                     foreach (KeyValuePair<int, int[][]> bundle in bundles)
                     {
@@ -121,7 +121,7 @@ namespace StardewValleyBundleTooltips
                             }
 
                             var isItemInBundleSlot = communityCenter.bundles[bundle.Key][bundle.Value[i][3]];
-                            if ((item is StardewValley.Object) && item.Stack != 0 && bundle.Value[i] != null && bundle.Value[i][0] == item.parentSheetIndex && itemName == item.DisplayName && bundle.Value[i][2] <= ((StardewValley.Object)item).quality)
+                            if ((item is StardewValley.Object) && item.Stack != 0 && bundle.Value[i] != null && bundle.Value[i][0] == item.ParentSheetIndex && itemName == item.DisplayName && bundle.Value[i][2] <= ((StardewValley.Object)item).Quality)
                             {
                                 if(!isItemInBundleSlot)
                                 {
@@ -172,9 +172,9 @@ namespace StardewValleyBundleTooltips
             // game menu
             if (menu is GameMenu gameMenu)
             {
-                IClickableMenu page = this.Helper.Reflection.GetPrivateValue<List<IClickableMenu>>(gameMenu, "pages")[gameMenu.currentTab];
+                IClickableMenu page = this.Helper.Reflection.GetField<List<IClickableMenu>>(gameMenu, "pages").GetValue()[gameMenu.currentTab];
                 if (page is InventoryPage)
-                    return this.Helper.Reflection.GetPrivateValue<Item>(page, "hoveredItem");
+                    return this.Helper.Reflection.GetField<Item>(page, "hoveredItem").GetValue();
             }
             // from inventory UI (so things like shops and so on)
             else if (menu is MenuWithInventory inventoryMenu)
@@ -191,7 +191,7 @@ namespace StardewValleyBundleTooltips
             {
                 if (menu is Toolbar toolbar)
                 {
-                    return this.Helper.Reflection.GetPrivateValue<Item>(menu, "hoverItem");
+                    return this.Helper.Reflection.GetField<Item>(menu, "hoverItem").GetValue();
                 }
             }
 

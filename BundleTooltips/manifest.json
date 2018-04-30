@@ -4,10 +4,12 @@
   "Version": {
     "MajorVersion": 1,
     "MinorVersion": 0,
-    "PatchVersion": 7,
+    "PatchVersion": 8,
     "Build": null
   },
   "Description": "Adding a tooltip to items telling you if they are needed in a bundle.",
   "UniqueID": "musbah.bundleTooltip",
-  "EntryDll": "StardewValleyBundleTooltips.dll"
+  "EntryDll": "StardewValleyBundleTooltips.dll",
+  "MinimumVersion": "2.1.0",
+  "UpdateKeys": [ "Nexus:1329" ]
 }
