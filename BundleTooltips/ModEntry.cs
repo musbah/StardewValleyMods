@@ -69,7 +69,7 @@ namespace StardewValleyBundleTooltips
             //remove duplicates
             itemsInBundles = new HashSet<int>(itemsInBundles).ToList();
 
-        isLoaded = true; 
+            isLoaded = true;
         }
 
         private void GraphicsEvents_OnPreRenderHudEvent(object sender, EventArgs e)
@@ -80,7 +80,7 @@ namespace StardewValleyBundleTooltips
 
         private void GraphicsEvents_OnPostRenderHudEvent(object sender, EventArgs e)
         {
-            if (isLoaded && Game1.activeClickableMenu == null && toolbarItem != null)
+            if (isLoaded && !Game1.MasterPlayer.mailReceived.Contains("JojaMember") && Game1.activeClickableMenu == null && toolbarItem != null)
             {
                 PopulateHoverTextBoxAndDraw(toolbarItem,true);
                 toolbarItem = null;
@@ -89,7 +89,7 @@ namespace StardewValleyBundleTooltips
 
         private void GraphicsEvents_OnPostRenderGuiEvent(object sender, EventArgs e)
         {
-            if (isLoaded && Game1.activeClickableMenu != null)
+            if (isLoaded && !Game1.MasterPlayer.mailReceived.Contains("JojaMember") && Game1.activeClickableMenu != null)
             {
                 Item item = this.GetHoveredItemFromMenu(Game1.activeClickableMenu);
                 if (item != null)
