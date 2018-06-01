@@ -26,6 +26,8 @@ namespace StardewValleyBundleTooltips
         // check if a mod is loaded
         bool isCJBSellItemPriceLoaded;
 
+        private bool isUiInfoSuiteLoaded; //Check to see if UiInfoSuiteIsLoaded
+
         Item toolbarItem;
         List<int> itemsInBundles;
         Dictionary<int, int[][]> bundles;
@@ -42,6 +44,7 @@ namespace StardewValleyBundleTooltips
         public override void Entry(IModHelper helper)
         {
             isCJBSellItemPriceLoaded = this.Helper.ModRegistry.IsLoaded("CJBok.ShowItemSellPrice");
+            isUiInfoSuiteLoaded = this.Helper.ModRegistry.IsLoaded("Cdaragorn.UiInfoSuite");
 
             SaveEvents.AfterLoad += this.SaveEvents_AfterLoad;
             GraphicsEvents.OnPostRenderGuiEvent += GraphicsEvents_OnPostRenderGuiEvent;
@@ -208,7 +211,7 @@ namespace StardewValleyBundleTooltips
             int y = (int)(Mouse.GetState().Y / Game1.options.zoomLevel) + Game1.tileSize / 2;
 
             //So that the tooltips don't overlap
-            if (isCJBSellItemPriceLoaded && !isItFromToolbar)
+            if ((isCJBSellItemPriceLoaded || isUiInfoSuiteLoaded) && !isItFromToolbar)
             {
                 if (itemStack > 1)
                     y += 95;
