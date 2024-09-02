@@ -42,7 +42,8 @@ namespace StardewValleyBundleTooltips
         public override void Entry(IModHelper helper)
         {
             isCJBSellItemPriceLoaded = this.Helper.ModRegistry.IsLoaded("CJBok.ShowItemSellPrice");
-            isUiInfoSuiteLoaded = this.Helper.ModRegistry.IsLoaded("Cdaragorn.UiInfoSuite");
+            isUiInfoSuiteLoaded = this.Helper.ModRegistry.IsLoaded("Cdaragorn.UiInfoSuite")
+                                 || this.Helper.ModRegistry.IsLoaded("Annosz.UiInfoSuite2");
 
             //Events
             helper.Events.GameLoop.SaveLoaded += SaveEvents_AfterLoad;
